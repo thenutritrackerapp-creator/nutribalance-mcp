@@ -11,32 +11,34 @@ interface ScoreCategory {
 }
 
 export function registerScoreTool(server: McpServer): void {
-  server.tool(
+  server.registerTool(
     'nutrition_score',
-    "Calculate a nutrition quality score (0–100) for a day's eating based on macros and optional micronutrient data. Returns a breakdown by category, a letter grade, and actionable recommendations. Use this when someone wants to rate their diet, check if they're eating well, or get feedback on a day's meals.",
     {
-      calories_eaten: z.number().min(0).max(10000).describe('Total calories eaten today'),
-      calorie_target: z.number().min(800).max(6000).describe('Daily calorie target'),
-      protein_g: z.number().min(0).max(500).describe('Protein eaten today (grams)'),
-      protein_target_g: z.number().min(0).max(400).describe('Daily protein target (grams)'),
-      carbs_g: z.number().min(0).max(1000).describe('Carbohydrates eaten today (grams)'),
-      fat_g: z.number().min(0).max(500).describe('Fat eaten today (grams)'),
-      fiber_g: z.number().min(0).max(100).optional().describe('Fibre eaten today (grams) — optional'),
-      vegetable_servings: z
-        .number()
-        .int()
-        .min(0)
-        .max(20)
-        .optional()
-        .describe('Number of vegetable/fruit servings today — optional (1 serving = ~80g)'),
-      water_ml: z
-        .number()
-        .min(0)
-        .max(10000)
-        .optional()
-        .describe('Water consumed today (ml) — optional'),
+      description: "Calculate a nutrition quality score (0–100) for a day's eating based on macros and optional micronutrient data. Returns a breakdown by category, a letter grade, and actionable recommendations. Use this when someone wants to rate their diet, check if they're eating well, or get feedback on a day's meals.",
+      inputSchema: {
+        calories_eaten: z.number().min(0).max(10000).describe('Total calories eaten today'),
+        calorie_target: z.number().min(800).max(6000).describe('Daily calorie target'),
+        protein_g: z.number().min(0).max(500).describe('Protein eaten today (grams)'),
+        protein_target_g: z.number().min(0).max(400).describe('Daily protein target (grams)'),
+        carbs_g: z.number().min(0).max(1000).describe('Carbohydrates eaten today (grams)'),
+        fat_g: z.number().min(0).max(500).describe('Fat eaten today (grams)'),
+        fiber_g: z.number().min(0).max(100).optional().describe('Fibre eaten today (grams) — optional'),
+        vegetable_servings: z
+          .number()
+          .int()
+          .min(0)
+          .max(20)
+          .optional()
+          .describe('Number of vegetable/fruit servings today — optional (1 serving = ~80g)'),
+        water_ml: z
+          .number()
+          .min(0)
+          .max(10000)
+          .optional()
+          .describe('Water consumed today (ml) — optional'),
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
-    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({
       calories_eaten,
       calorie_target,

@@ -6,7 +6,11 @@ description: >
   keto, high-protein), fix nutrient deficiencies with food & supplement guidance,
   and score a day's eating from 0–100. Powered by NutriBalance.
 homepage: https://nutribalance-mcp-b9cn.vercel.app
-icon: https://raw.githubusercontent.com/thenutritrackerapp-creator/nutribalance-mcp/master/icon.png
+icon: https://raw.githubusercontent.com/CK-Boodhram/nutribalance-mcp/master/icon.png
+configSchema:
+  type: object
+  properties: {}
+  additionalProperties: false
 startCommand:
   type: http
-  url: https://nutribalance-mcp-b9cn.vercel.app/mcp
+  url: https://nutribalance-mcp-b9cn.vercel.app/api/mcp

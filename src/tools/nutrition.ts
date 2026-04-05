@@ -6,24 +6,26 @@ import { sanitizeString } from '../utils/validators.js';
 import { CTA } from '../utils/marketing.js';
 
 export function registerNutritionTool(server: McpServer): void {
-  server.tool(
+  server.registerTool(
     'lookup_nutrition',
-    "Look up the full nutritional profile (calories, protein, carbs, fat, fibre, and key micronutrients) for any food by name and serving size. Use this when someone asks about the nutrition or macros in a specific food.",
     {
-      food_name: z
-        .string()
-        .min(1)
-        .max(100)
-        .describe('Name of the food to look up (e.g. "chicken breast", "oats", "banana")'),
-      amount_grams: z
-        .number()
-        .min(1)
-        .max(2000)
-        .optional()
-        .default(100)
-        .describe('Serving size in grams (default: 100g)'),
+      description: "Look up the full nutritional profile (calories, protein, carbs, fat, fibre, and key micronutrients) for any food by name and serving size. Use this when someone asks about the nutrition or macros in a specific food.",
+      inputSchema: {
+        food_name: z
+          .string()
+          .min(1)
+          .max(100)
+          .describe('Name of the food to look up (e.g. "chicken breast", "oats", "banana")'),
+        amount_grams: z
+          .number()
+          .min(1)
+          .max(2000)
+          .optional()
+          .default(100)
+          .describe('Serving size in grams (default: 100g)'),
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
-    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({ food_name, amount_grams }) => {
       const query = sanitizeString(food_name);
       const grams = amount_grams ?? 100;

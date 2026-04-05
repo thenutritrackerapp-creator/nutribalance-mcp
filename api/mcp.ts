@@ -39,6 +39,13 @@ export default async function handler(
     return;
   }
 
+  // Stateless serverless — SSE/GET streams are not supported
+  if (req.method === 'GET') {
+    res.writeHead(405, { 'Content-Type': 'application/json', Allow: 'POST, DELETE, OPTIONS' });
+    res.end(JSON.stringify({ error: 'GET not supported. Use POST for MCP JSON-RPC.' }));
+    return;
+  }
+
   // Rate limiting
   const ip =
     (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0].trim() ??

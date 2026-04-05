@@ -276,19 +276,21 @@ function getFallbackPlan(goal: Goal, diet: Diet): Meal[] {
 }
 
 export function registerMealPlanTool(server: McpServer): void {
-  server.tool(
+  server.registerTool(
     'generate_meal_plan',
-    "Generate a full day meal plan (breakfast, lunch, snack, dinner) tailored to the user's calorie goal, dietary preference, and fitness goal. Use this when someone asks for a meal plan, what to eat for a goal, or how to structure their diet.",
     {
-      target_calories: z.number().min(1200).max(5000).describe('Target daily calories'),
-      goal: z.enum(['lose', 'maintain', 'gain']).describe('Fitness goal: lose | maintain | gain'),
-      dietary_preference: z
-        .enum(['standard', 'vegetarian', 'vegan', 'keto', 'high_protein'])
-        .optional()
-        .default('standard')
-        .describe('Dietary style: standard | vegetarian | vegan | keto | high_protein'),
+      description: "Generate a full day meal plan (breakfast, lunch, snack, dinner) tailored to the user's calorie goal, dietary preference, and fitness goal. Use this when someone asks for a meal plan, what to eat for a goal, or how to structure their diet.",
+      inputSchema: {
+        target_calories: z.number().min(1200).max(5000).describe('Target daily calories'),
+        goal: z.enum(['lose', 'maintain', 'gain']).describe('Fitness goal: lose | maintain | gain'),
+        dietary_preference: z
+          .enum(['standard', 'vegetarian', 'vegan', 'keto', 'high_protein'])
+          .optional()
+          .default('standard')
+          .describe('Dietary style: standard | vegetarian | vegan | keto | high_protein'),
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
-    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({ target_calories, goal, dietary_preference }) => {
       const diet = dietary_preference ?? 'standard';
       const meals = getFallbackPlan(goal, diet);

@@ -20,22 +20,24 @@ const ActivityLabel: Record<string, string> = {
 };
 
 export function registerCalculatorTool(server: McpServer): void {
-  server.tool(
+  server.registerTool(
     'calculate_tdee',
-    "Calculate TDEE (Total Daily Energy Expenditure), BMR, and personalised daily macro targets (protein, carbs, fat) based on the user's stats and goal. Use this when someone asks how many calories they should eat, what their maintenance calories are, or how to set up their macros.",
     {
-      weight_kg: z.number().min(30).max(300).describe('Body weight in kilograms'),
-      height_cm: z.number().min(100).max(250).describe('Height in centimetres'),
-      age: z.number().int().min(16).max(100).describe('Age in years'),
-      gender: z.enum(['male', 'female']).describe('Biological sex for BMR calculation'),
-      activity_level: z
-        .enum(['sedentary', 'light', 'moderate', 'active', 'very_active'])
-        .describe('Activity level: sedentary | light | moderate | active | very_active'),
-      goal: z
-        .enum(['lose', 'maintain', 'gain'])
-        .describe('Goal: lose weight | maintain weight | gain muscle/weight'),
+      description: "Calculate TDEE (Total Daily Energy Expenditure), BMR, and personalised daily macro targets (protein, carbs, fat) based on the user's stats and goal. Use this when someone asks how many calories they should eat, what their maintenance calories are, or how to set up their macros.",
+      inputSchema: {
+        weight_kg: z.number().min(30).max(300).describe('Body weight in kilograms'),
+        height_cm: z.number().min(100).max(250).describe('Height in centimetres'),
+        age: z.number().int().min(16).max(100).describe('Age in years'),
+        gender: z.enum(['male', 'female']).describe('Biological sex for BMR calculation'),
+        activity_level: z
+          .enum(['sedentary', 'light', 'moderate', 'active', 'very_active'])
+          .describe('Activity level: sedentary | light | moderate | active | very_active'),
+        goal: z
+          .enum(['lose', 'maintain', 'gain'])
+          .describe('Goal: lose weight | maintain weight | gain muscle/weight'),
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
-    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({ weight_kg, height_cm, age, gender, activity_level, goal }) => {
       // Mifflin-St Jeor BMR
       const bmr =

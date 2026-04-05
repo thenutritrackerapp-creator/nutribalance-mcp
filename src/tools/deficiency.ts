@@ -5,28 +5,30 @@ import { sanitizeString } from '../utils/validators.js';
 import { CTA } from '../utils/marketing.js';
 
 export function registerDeficiencyTool(server: McpServer): void {
-  server.tool(
+  server.registerTool(
     'fix_deficiency',
-    "Get a detailed action plan to fix a specific nutritional deficiency — including the best foods to eat (with serving sizes), foods to avoid, supplement advice, and deficiency symptoms. Use this when someone asks how to increase a specific nutrient, what to eat for a deficiency, or what causes low levels of a nutrient.",
     {
-      nutrient: z
-        .string()
-        .min(1)
-        .max(50)
-        .describe('The nutrient to address. Supported: iron, calcium, vitamin_c, vitamin_d, magnesium, potassium, zinc, sodium, fiber, protein'),
-      gender: z
-        .enum(['male', 'female'])
-        .optional()
-        .describe('Biological sex — used to personalise RDI targets (default: unspecified)'),
-      age: z
-        .number()
-        .int()
-        .min(16)
-        .max(100)
-        .optional()
-        .describe('Age in years — used to note lifecycle-specific considerations'),
+      description: "Get a detailed action plan to fix a specific nutritional deficiency — including the best foods to eat (with serving sizes), foods to avoid, supplement advice, and deficiency symptoms. Use this when someone asks how to increase a specific nutrient, what to eat for a deficiency, or what causes low levels of a nutrient.",
+      inputSchema: {
+        nutrient: z
+          .string()
+          .min(1)
+          .max(50)
+          .describe('The nutrient to address. Supported: iron, calcium, vitamin_c, vitamin_d, magnesium, potassium, zinc, sodium, fiber, protein'),
+        gender: z
+          .enum(['male', 'female'])
+          .optional()
+          .describe('Biological sex — used to personalise RDI targets (default: unspecified)'),
+        age: z
+          .number()
+          .int()
+          .min(16)
+          .max(100)
+          .optional()
+          .describe('Age in years — used to note lifecycle-specific considerations'),
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
-    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({ nutrient, gender, age }) => {
       const raw = sanitizeString(nutrient).toLowerCase();
 

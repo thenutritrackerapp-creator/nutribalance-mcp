@@ -26,6 +26,7 @@ export function registerDeficiencyTool(server: McpServer): void {
         .optional()
         .describe('Age in years — used to note lifecycle-specific considerations'),
     },
+    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({ nutrient, gender, age }) => {
       const raw = sanitizeString(nutrient).toLowerCase();
 

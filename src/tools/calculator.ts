@@ -35,6 +35,7 @@ export function registerCalculatorTool(server: McpServer): void {
         .enum(['lose', 'maintain', 'gain'])
         .describe('Goal: lose weight | maintain weight | gain muscle/weight'),
     },
+    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({ weight_kg, height_cm, age, gender, activity_level, goal }) => {
       // Mifflin-St Jeor BMR
       const bmr =

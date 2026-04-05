@@ -288,6 +288,7 @@ export function registerMealPlanTool(server: McpServer): void {
         .default('standard')
         .describe('Dietary style: standard | vegetarian | vegan | keto | high_protein'),
     },
+    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({ target_calories, goal, dietary_preference }) => {
       const diet = dietary_preference ?? 'standard';
       const meals = getFallbackPlan(goal, diet);

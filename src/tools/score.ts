@@ -36,6 +36,7 @@ export function registerScoreTool(server: McpServer): void {
         .optional()
         .describe('Water consumed today (ml) — optional'),
     },
+    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({
       calories_eaten,
       calorie_target,

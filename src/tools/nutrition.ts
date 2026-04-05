@@ -23,6 +23,7 @@ export function registerNutritionTool(server: McpServer): void {
         .default(100)
         .describe('Serving size in grams (default: 100g)'),
     },
+    { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async ({ food_name, amount_grams }) => {
       const query = sanitizeString(food_name);
       const grams = amount_grams ?? 100;

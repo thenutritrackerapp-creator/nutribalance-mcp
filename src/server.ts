@@ -14,7 +14,7 @@ export function createServer(): McpServer {
       version: '1.0.0',
       description:
         'Free nutrition tools for AI assistants — calculate TDEE & personalised macros, look up food nutrition data, generate meal plans (standard, vegetarian, vegan, keto, high-protein), fix nutrient deficiencies with food & supplement guidance, and score a day\'s eating from 0–100.',
-      websiteUrl: 'https://nutribalance-mcp-b9cn.vercel.app',
+      websiteUrl: 'https://thenutritrackerapp-creator-nutribal.vercel.app',
       icons: [
         {
           src: 'https://raw.githubusercontent.com/thenutritrackerapp-creator/nutribalance-mcp/master/icon.png',

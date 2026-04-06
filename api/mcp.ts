@@ -58,14 +58,12 @@ export default async function handler(
   }
 
   // Collect request body
-  const bodyChunks: Buffer[] = [];
+  let rawBody = '';
   await new Promise<void>((resolve, reject) => {
-    req.on('data', (chunk: Buffer) => bodyChunks.push(chunk));
+    req.on('data', (chunk) => { rawBody += chunk; });
     req.on('end', resolve);
     req.on('error', reject);
   });
-
-  const rawBody = Buffer.concat(bodyChunks).toString();
   let parsedBody: unknown;
 
   try {
@@ -76,9 +74,27 @@ export default async function handler(
     return;
   }
 
+  // Some MCP clients (e.g. Smithery) omit "text/event-stream" from Accept.
+  // The transport rejects those requests with 406, so we normalise the header here.
+  // enableJsonResponse: true makes the transport reply with plain JSON instead of SSE,
+  // which is required for serverless functions that can't hold open SSE streams.
+  req.headers['accept'] = 'application/json, text/event-stream';
+
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: undefined, // stateless — no session persistence needed
+    enableJsonResponse: true,
   });
+
+  // In stateless serverless mode each HTTP request creates a fresh transport.
+  // The transport rejects non-initialize requests with "Server not initialized"
+  // because _initialized is false on every new instance. Smithery (and other
+  // clients) send initialize and tools/list as separate POST requests, so the
+  // second request would always fail without this pre-warm.
+  const requestMethod = (parsedBody as Record<string, unknown> | undefined)?.method;
+  if (requestMethod && requestMethod !== 'initialize') {
+    (transport as unknown as { _webStandardTransport: { _initialized: boolean } })
+      ._webStandardTransport._initialized = true;
+  }
 
   const server = createServer();
 

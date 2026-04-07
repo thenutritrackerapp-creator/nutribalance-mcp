@@ -1,0 +1,12 @@
+{
+  "name": "nutribalance-mcp",
+  "displayName": "NutriBalance",
+  "description": "Free nutrition tools for AI assistants — calculate TDEE & personalised macros, look up food nutrition data, generate meal plans, fix nutrient deficiencies, and score a day's eating from 0–100.",
+  "icon": "https://raw.githubusercontent.com/thenutritrackerapp-creator/nutribalance-mcp/master/icon.png",
+  "homepage": "https://thenutritrackerapp-creator-nutribal.vercel.app",
+  "mcpServers": {
+    "nutribalance-mcp": {
+      "url": "https://thenutritrackerapp-creator-nutribalance-cv4tvu4k2.vercel.app/api/mcp"
+    }
+  }
+}
